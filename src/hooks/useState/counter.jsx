@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 export class CounterClass extends React.Component {
   constructor(props) {
     super(props);

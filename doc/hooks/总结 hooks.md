@@ -1,4 +1,3 @@
-
 # React Hooks
 
 ## 概念
@@ -208,9 +207,9 @@ export const CounterLazyNoMergeState = () => {
 
 
 
-#### ‼️ 性能优化：
+#### ‼️ 性能优化方案：
 
-**1. Object.is：**
+**1. Object.is：(内置)**
 
 ```react
 export const performanceCounter = () => {
@@ -282,21 +281,116 @@ export const performanceCacheCounter = () => {
 
 > useMemo同样可以实现，useCallback只是 他的 一个 语法糖？
 
+
+
+### useMemo & useCallback
+
+#### 能力层面：
+
+`useCallback` gives you [**referential equality**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness) **between renders** for **functions**. And `useMemo` gives you **referential equality between renders** for **values**.
+
+#### 使用层面：
+
+- **useMemo: *Returns a memoized value.***
+
+- **useCallback:*Returns a memoized callback.***
+
+  
+
+`useCallback` and `useMemo` both expect a function and an array of dependencies. The difference is that `useCallback` returns its function when the dependencies change while `useMemo` calls its function and returns the result.
+
+
+
+#### demo: 解释何时需要缓存
+
+```react
+	// 注意：Child 接收了 addClick 函数作为参数
+// 如果没有对该函数做缓存，会导致 addClick 重复创建新的内存对象。
+
+let Child = ({ data, addClick }) => {
+  console.log("Child组件渲染了");
+  return <button onClick={addClick}>{data.number}</button>;
+};
+
+
+// memo：让函数组件拥有了记忆的功能，只有当组件内部状态发生变更的时候才会重新渲染。
+// 但是，由于addClick 是一个函数，如果不做缓存处理，每次都是一个新的值，会导致Child组件渲染。
+
+Child = memo(Child);
+
+let lastAddClick,lastData;
+
+export const UseMemoPerformance = () => {
+  let [number, setNumber] = useState(0);
+	let [name, setName] = useState("");
+	
+	//第一个参数deps,表示此函数缓存依赖的项，依赖改变后才会创建新的函数。
+	const addClick = useCallback(() => setNumber(number + 1), [number]);
+
+	console.log("lastAddClick === addClick", lastAddClick === addClick);
+	
+  lastAddClick = addClick;
+  // 比useCallback厉害之处在于能够缓存函数的返回值，其解决的问题是相同的（缓存）
+  const data = useMemo(() => ({ number }), [number]);
+  console.log("lastData === data", lastData === data);
+  lastData = data;
+  return (
+    <div>
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <Child addClick={addClick} data={data} />
+    </div>
+  );
+};
+```
+
+
+
+#### ‼️useMemo vs useCallback
+
+So what is the difference? `useCallback` **returns its function uncalled** so you can call it later, while `useMemo` **calls its function and returns the result**.
+
+
+
+```react
+function foo() {
+  return 'bar';
+}
+
+const memoizedCallback = useCallback(foo, []);
+const memoizedResult = useMemo(foo, []);
+
+memoizedCallback;
+// ƒ foo() {
+//   return 'bar';
+// }
+memoizedResult; // 'bar'
+memoizedCallback(); // 'bar'
+memoizedResult(); // 🔴 TypeError
+```
+
+https://medium.com/@jan.hesters/usecallback-vs-usememo-c23ad1dc60
+
 ### useReducer
 
 #### 能力层面：
 
 
-*   useState 的替代方案。它接收一个形如 (state, action) => newState 的 reducer，并返回当前的 state 以及与其配套的 dispatch 方法
-*   在某些场景下，useReducer 会比 useState 更适用，例如 state 逻辑较复杂且包含多个子值，或者下一个 state 依赖于之前的 state 等
+*   在某些场景下，useReducer 会比 useState 更适用，例如 state 逻辑较复杂且包含多个子数据（复杂对象），或者下一个 state 依赖于之前的 state 等
+*   为函数组件提供类似Redux的状态流管理的能力
 
 #### 使用层面：
+
+- 它接收一个形如 (state, action) => newState 的 reducer，并返回当前的 state 以及与其配套的 dispatch 方法。
 
 ```
 const [state, dispatch] = useReducer(reducer, initialArg, init);
 ```
 
-#### demo:
+#### demo: 用法
 
 ```
 const initialState = 0;
@@ -330,71 +424,65 @@ function Counter(){
 
 - [ ] fm
 
-
-
 ### useContext 
 
 #### 能力层面（语法糖？）：
 
-- 接收一个 context 对象（React.createContext 的返回值）并返回该 context 的当前值
-
-*   当前的 context 值由上层组件中距离当前组件最近的 <MyContext.Provider> 的 value prop 决定
-*   当组件上层最近的 <MyContext.Provider> 更新时，该 Hook 会触发重渲染，并使用最新传递给 MyContext provider 的 context value 值
+*   useContext(MyContext) 相当于 class 组件中的 `<MyContext.Consumer>`
+*   useContext(MyContext) 只是让你能够读取 context 的值以及订阅 context 的变化,你仍然需要在上层组件树中使用 <MyContext.Provider> 来为下层组件提供 context
 
 #### 使用层面：
 
-*   useContext(MyContext) 相当于 class 组件中的 `static contextType = MyContext` 或者 `<MyContext.Consumer>`
-*   useContext(MyContext) 只是让你能够读取 context 的值以及订阅 context 的变化。你仍然需要在上层组件树中使用 <MyContext.Provider> 来为下层组件提供 context
+- 接收一个 context 对象（React.createContext 的返回值）并返回该 context 的当前值
+
+*   当前的 context 值由上层组件中距离当前组件最近的 <MyContext.Provider> 决定
+*   当组件上层最近的 <MyContext.Provider> 更新时，该 Hook 会触发重渲染，并使用最新传递给 MyContext provider 的 context value 值
+
+
+
+>  当组件上层最近的 `` 更新时，该 Hook 会触发重渲染，并使用最新传递给 `MyContext` provider 的 context `value` 值。即使祖先使用 [React.memo](https://zh-hans.reactjs.org/docs/react-api.html#reactmemo) 或 [shouldComponentUpdate](https://zh-hans.reactjs.org/docs/react-component.html#shouldcomponentupdate)，也会在组件本身使用 `useContext` 时重新渲染。
+
+
 
 #### demo：
 
-```
-const CounterContext = React.createContext();
-
-function reducer(state, action) {
-  switch (action.type) {
-    case 'increment':
-      return {number: state.number + 1};
-    case 'decrement':
-      return {number: state.number - 1};
-    default:
-      throw new Error();
-  }
-}
-function Counter(){
-  let {state,dispatch} = useContext(CounterContext);
-  return (
-      <>
-        <p>{state.number}</p>
-        <button onClick={() => dispatch({type: 'increment'})}>+</button>
-        <button onClick={() => dispatch({type: 'decrement'})}>-</button>
-      </>
-  )
-}
-function App(){
-    const [state, dispatch] = useReducer(reducer, {number:0});
-    return (
-        <CounterContext.Provider value={{state,dispatch}}>
-            <Counter/>
-        </CounterContext.Provider>
-    )
-
+```react
+function Counter() {
+	// 只是把MyContext解构出来，不要想多了
+	// 不管父组件是否进行SCU优化，或者memo优化，只要MyContext发生改变，就会重新渲染该组件
+	let { state, setState } = useContext(MyContext);
+	return (
+		<div>
+			<p>{state.number}</p>
+			<button onClick={() => setState({ number: state.number + 1 })}>+</button>
+		</div>
+	)
 }
 ```
 
-### effect
+#### ‼️性能优化：
+
+useContext可能会导致组件频繁渲染，此时可以将其他函数或者对象进行memo处理。
+
+- [ ] 性能优化
+
+### useEffect
 
 #### 能力层面：
 
+- 该 Hook 接收一个包含命令式、且可能有副作用代码的函数
+
+
+
 
 *   在函数组件主体内（这里指在 React 渲染阶段）改变 DOM、添加订阅、设置定时器、记录日志以及执行其他包含副作用的操作都是不被允许的，因为这可能会产生莫名其妙的 bug 并破坏 UI 的一致性
-*   使用 useEffect 完成副作用操作。赋值给 useEffect 的函数会在组件渲染到屏幕之后执行。你可以把 effect 看作从 React 的纯函数式世界通往命令式世界的逃生通道
+*   使用 useEffect 完成副作用操作，赋值给 useEffect 的函数**会在组件渲染到屏幕之后执行**。你可以把 effect 看作从 React 的纯函数式世界通往命令式世界的逃生通道
 *   useEffect 就是一个 Effect Hook，给函数组件增加了操作副作用的能力。它跟 class 组件中的 `componentDidMount`、`componentDidUpdate` 和 `componentWillUnmount` 具有相同的用途，只不过被合并成了一个 API
 
 #### 使用层面：
 
 
-*   该 Hook 接收一个包含命令式、且可能有副作用代码的函数
+*   
 
 ```
 useEffect(didUpdate);
