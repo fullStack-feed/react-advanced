@@ -1,0 +1,1 @@
+export const compose = (...func) => func.reduce((a,b) => (...args) => a(b(...args)))
