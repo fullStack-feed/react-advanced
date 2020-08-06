@@ -20,7 +20,7 @@
 
 ### 全家桶基础
 
-- [x] [React.js 总结 （缓慢整理中）](./doc/Reactjs总结)
+- [x] [React.js 总结 （缓慢整理）](./doc/Reactjs总结)
 - [x] [React-Router 基础 & 原理](./doc/React-Router总结)
 - [x] [Redux 基础 & 原理](./doc/Redux总结)
 - [x] [React-Redux 基础 & 原理](./doc/React-Redux总结)
