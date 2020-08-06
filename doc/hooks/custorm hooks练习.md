@@ -1,5 +1,5 @@
 
-### 9.2 中间件 [#](#t279.2 中间件)
+## 9.2 中间件 [#](#t279.2 中间件)
 
 #### 9.2.1 logger [#](#t289.2.1 logger)
 
@@ -322,11 +322,12 @@ ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 10. 路由 hooks [#](#t3310.路由hooks)
+
 --------------------------------
 
 ### 10.1 useParams [#](#t3410.1 useParams)
 
-*   获取路由中的 params
+* 获取路由中的 params
 
 #### 10.1.1 老版 [#](#t3510.1.1 老版)
 
@@ -378,7 +379,7 @@ ReactDOM.render(
 
 ### 10.2.useLocation [#](#t3710.2.useLocation)
 
-*   可以查看当前路由
+* 可以查看当前路由
 
 #### 10.2.1. 老版 [#](#t3810.2.1.老版)
 
@@ -431,7 +432,7 @@ ReactDOM.render(
 
 ### 10.3.useHistory [#](#t4010.3.useHistory)
 
-*   可以返回上一个网页
+* 可以返回上一个网页
 
 #### 10.3.1 老版 [#](#t4110.3.1 老版)
 
@@ -519,8 +520,8 @@ ReactDOM.render(
 
 ### 10.4 useRouteMatch [#](#t4310.4 useRouteMatch)
 
-*   `useRouteMatch`挂钩尝试以与`Route`相同的方式匹配当前`URL`
-*   在无需实际呈现`Route`的情况下访问匹配数据最有用
+* `useRouteMatch`挂钩尝试以与`Route`相同的方式匹配当前`URL`
+* 在无需实际呈现`Route`的情况下访问匹配数据最有用
 
 #### 10.4.1 旧版 [#](#t4410.4.1 旧版)
 

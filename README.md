@@ -20,23 +20,18 @@
 
 ### 全家桶基础
 
-- [x] [React.js 总结](./doc/Reactjs总结)
+- [x] [React.js 总结 （缓慢整理中）](./doc/Reactjs总结)
+- [x] [React-Router 基础 & 原理](./doc/React-Router总结)
+- [x] [Redux 基础 & 原理](./doc/Redux总结)
+- [x] [React-Redux 基础 & 原理](./doc/React-Redux总结)
+- [x] [Redux 中间件 & 原理](./doc/React中间件总结)
 
-- [x] [React-Router 基础 & 原理]()
-
-- [ ] [Redux 基础 & 原理](./doc/Redux总结)
-
-- [ ] [Redux 中间件 & 原理](./doc/中间件总结)
-
-- [ ] [connected-react-router 基本]()
-
-- [ ] [connected-react-router]()
-
+- [ ] [connected-react-router 基本使用]()
+- [ ] [connected-react-router 原理]()
 - [ ] [middleware - saga]()
 
-[react - hooks 学习笔记](./doc/hooks/总结%20hooks.md)
-
-[custom - hooks 练习笔记](./doc/hooks/custorm%20hooks练习.md)
+- [x] [react - hooks 学习笔记](./doc/hooks/总结%20hooks.md)
+- [ ] [custom - hooks 练习笔记（没有整理，混乱中）](./doc/hooks/custorm%20hooks练习.md)
 
 ### 状态管理
 

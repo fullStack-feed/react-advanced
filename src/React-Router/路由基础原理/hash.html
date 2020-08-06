@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site created using create-react-app" />
+  <title>React App</title>
+</head>
+
+<body>
+  <a href="#/a">去/a</a>
+  <a href="#/b">去/b</a>
+  <div id="root"></div>
+  <script>
+    let root = document.getElementById('root');
+
+    // hash 路由主要靠的是监听 window.hashchange 事件
+    // 当路由改变时，从location中获取改变后的 location 对象去 match
+    
+    
+    /* location 对象的属性：（常见的）
+      protocol: "file:"
+      href: "file:///Users/supengyu/Downloads/react/4.router/public/hash.html#/b"
+      pathname: "/Users/supengyu/Downloads/react/4.router/public/hash.html"
+      hash: "#/b"
+      search: ""
+      port: ""
+      host: ""
+      hostname: ""
+      origin: "file://"
+    */
+    window.addEventListener('hashchange', () => {
+      let hash = window.location.hash.slice(1);
+      if (hash === '/a') {
+        root.innerHTML = 'a';
+      } else if (hash === '/b') {
+        root.innerHTML = 'b';
+      }
+    });
+  </script>
+</body>
+
+</html>

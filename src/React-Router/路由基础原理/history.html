@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script>
+      /**
+       * 只有在 history.back() & history.go() 触发该事件
+       * 
+      */
+        window.onpopstate = (event) => {
+            console.log({ state: event.state, pathname: window.location.pathname, type: 'popstate' });
+        }
+        /*
+        * 自定义window 事件
+        */
+        window.onpushstate = (event) => {
+            console.log(event);
+        }
+        
+        (function (history) {
+            let pushState = history.pushState;
+            // 对老的pushState做一个函数劫持
+            // 同样需要对history.replaceState做函数劫持 此处省略
+            history.pushState = function (state, title, pathname) {
+                if (typeof window.onpushstate === 'function') {
+                    window.onpushstate({ state, pathname, type: 'pushstate' });
+                }
+                return pushState.apply(history, arguments)
+            }
+        })(window.history);
+
+
+
+        //pushState 1：state 2：title(没啥用) 3 path 
+        setTimeout(() => {
+            history.pushState({ page: 1 }, 'page1', '/page1');
+        }, 1000);
+        setTimeout(() => {
+            history.pushState({ page: 2 }, 'page2', '/page2');
+        }, 2000);
+        setTimeout(() => {
+            history.pushState({ page: 3 }, 'page3', '/page3');
+        }, 3000);
+        // 修改当前栈顶路由
+        setTimeout(() => {
+            history.replaceState({ page: 4 }, 'page4', '/page4');
+        }, 4000);
+        // 往回调
+        setTimeout(() => {
+            history.back();
+        }, 5000);
+        setTimeout(() => {
+            history.back();
+        }, 6000);
+        // + 往前走 -往后走
+        setTimeout(() => {
+            history.go(1); // 停在哪个路径
+        }, 7000);
+    </script>
+</body>
+
+</html>
